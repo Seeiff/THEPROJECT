@@ -116,8 +116,6 @@ void LoginInterface()
 }
 int main()
 {
-    cout<<"zeby";
     LoginInterface();
-
     return 0;
 }
