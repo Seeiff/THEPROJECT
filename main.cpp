@@ -1,11 +1,28 @@
 #include <iostream>
+#include<string>
 #include <fstream>
 using namespace std;
+bool IsUser = false;
+bool IsAdmin = false;
 struct UserData
 {
     string USERNAME;
     string PASSWORD;
+    string FeedBack;
 }User[100], Admin[100];
+
+
+void AdminInterface()
+{
+    cout << "\tWelcome to the Admin interface\n";
+    cout << "1.Manage users\n";
+    cout << "1.Manage feedbacks\n";
+
+}
+
+
+
+
 void login()
 {
     ifstream fin;
@@ -22,10 +39,24 @@ void login()
         {
             if (User->USERNAME == storedusername && User->PASSWORD == storedpassword)
             {
+                IsUser = true;
                 found = true;
                 break;
             }
         }
+        
+        fin.close();
+        fin.open("admin.txt");
+        while (fin >> storedusername >> storedpassword)
+        {
+            if (User->USERNAME == storedusername && User->PASSWORD == storedpassword)
+            {
+                IsAdmin = true;
+                found = true;
+                break;
+            }
+        }
+
         fin.close();
         if (found)
             cout << "Login Successful!\n";
@@ -35,6 +66,10 @@ void login()
 
     } while (!found);
 }
+
+
+
+
 void signupasadmin()
 {
     ofstream fout;
@@ -57,6 +92,8 @@ void signupasadmin()
     case 'n':cout << "Thank you for using our program :)\n";
     }
 }
+
+
 
 void signup()
 {
@@ -97,6 +134,9 @@ void signup()
 
     }
 }
+
+
+/*The main login UI*/
 void LoginInterface()
 {
     char choice;
@@ -115,8 +155,21 @@ void LoginInterface()
     }
 
 }
+
+
+/*This is the main functions where all other program functions are called and exucted*/
+
 int main()
 {
+    
     LoginInterface();
+    if (IsUser)
+    {
+        cout << "user\n";
+    }
+    else if (IsAdmin)
+    {
+       AdminInterface();
+    }
     return 0;
 }
