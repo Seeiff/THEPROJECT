@@ -5,7 +5,7 @@ struct UserData
 {
     string USERNAME;
     string PASSWORD;
-}User[100],Admin[100];
+}User[100], Admin[100];
 void login()
 {
     ifstream fin;
@@ -47,7 +47,7 @@ void signupasadmin()
     fout << Admin->USERNAME << ' ' << Admin->PASSWORD << endl;
     fout.close();
     cout << "Signup Sucssesful!\n ";
-    cout << "Do you want to login ? (y/n)";
+    cout << "Do you want to login ? (y/n)\n";
     cin >> choice;
     switch (choice)
     {
@@ -63,7 +63,7 @@ void signup()
     string ans;
     while (true)
     {
-        cout << "Do you want to sign up as a user or as an admin\n";
+        cout << "Do you want to sign up as a user or as an admin ?\n";
         cin >> ans;
         if (ans == "User" || ans == "user")
         {
@@ -111,6 +111,7 @@ void LoginInterface()
     {
     case '1': signup();break;
     case '2': login();break;
+    default: cout << "Invalid input please enter 1 or 2\n ";LoginInterface();break;
     }
 
 }
