@@ -4,6 +4,7 @@
 using namespace std;
 bool IsUser = false;
 bool IsAdmin = false;
+cout << "ana zozbeh";
 struct UserData
 {
     string USERNAME;
