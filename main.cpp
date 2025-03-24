@@ -4,6 +4,7 @@
 using namespace std;
 bool IsUser = false;
 bool IsAdmin = false;
+string inputuser, inputpass, storedusername, storedpassword;
 struct UserData
 {
     string USERNAME;
@@ -14,9 +15,11 @@ struct UserData
 
 void AdminInterface()
 {
+    cout << "\t-------------------------------\n";
     cout << "\tWelcome to the Admin interface\n";
-    cout << "1.Manage users\n";
-    cout << "1.Manage feedbacks\n";
+    cout << "\t-------------------------------\n";
+    cout << "1.Manage users \n";
+    cout << "2.Delete users\n";
 
 }
 
@@ -26,30 +29,29 @@ void AdminInterface()
 void login()
 {
     ifstream fin;
-    string storedusername, storedpassword;
     bool found = false;
     do
     {
         cout << "Enter Username: ";
-        cin >> User->USERNAME;
+        cin >> inputuser;
         cout << "Enter Password: ";
-        cin >> User->PASSWORD;
+        cin >> inputpass;
         fin.open("user.txt");
         while (fin >> storedusername >> storedpassword)
         {
-            if (User->USERNAME == storedusername && User->PASSWORD == storedpassword)
+            if (inputuser == storedusername && inputpass == storedpassword)
             {
                 IsUser = true;
                 found = true;
                 break;
             }
         }
-        
+
         fin.close();
         fin.open("admin.txt");
         while (fin >> storedusername >> storedpassword)
         {
-            if (User->USERNAME == storedusername && User->PASSWORD == storedpassword)
+            if (inputuser == storedusername && inputpass == storedpassword)
             {
                 IsAdmin = true;
                 found = true;
@@ -75,11 +77,11 @@ void signupasadmin()
     ofstream fout;
     char choice;
     cout << "Enter Username: ";
-    cin >> Admin->USERNAME;
+    cin >> Admin[0].USERNAME;
     cout << "Enter Password: ";
-    cin >> Admin->PASSWORD;
+    cin >> Admin[0].PASSWORD;
     fout.open("admin.txt", ios::app);
-    fout << Admin->USERNAME << ' ' << Admin->PASSWORD << endl;
+    fout << Admin[0].USERNAME << ' ' << Admin[0].PASSWORD << endl;
     fout.close();
     cout << "Signup Sucssesful!\n ";
     cout << "Do you want to login ? (y/n)\n";
@@ -92,9 +94,24 @@ void signupasadmin()
     case 'n':cout << "Thank you for using our program :)\n";
     }
 }
-
-
-
+void userinterface()
+{
+    int ans;
+    cout << "\t-------------------------------\n";
+    cout << "\t       Welcome back " << inputuser << " !\n";
+    cout << "\t-------------------------------\n";
+    cout << "1.Submit a Feedback\n";
+    cout << "2.Edit an existing Feedback\n";
+    cout << "3.Delete Feedback\n";
+    cin >> ans;
+    switch (ans)
+    {
+    case '1': /*function el submit*/ break;
+    case '2': /*function el edit*/break;
+    case '3':/*function el delete*/break;
+    default:cout << "Invalid input please enter 1 or 2 or 3\n ";userinterface();break;
+    }
+}
 void signup()
 {
     string ans;
@@ -105,25 +122,62 @@ void signup()
         if (ans == "User" || ans == "user")
         {
             ofstream fout;
+            ifstream fin;
+            bool found = false;
             char choice;
             cout << "Enter Username: ";
-            cin >> User->USERNAME;
+            cin >> User[0].USERNAME;
             cout << "Enter Password: ";
-            cin >> User->PASSWORD;
-            fout.open("user.txt", ios::app);
-            fout << User->USERNAME << ' ' << User->PASSWORD << endl;
-            fout.close();
-            cout << "Signup Sucssesful!\n ";
-            cout << "Do you want to login ? (y/n)";
-            cin >> choice;
-            switch (choice)
+            cin >> User[0].PASSWORD;
+            fin.open("user.txt");
+            while (fin >> storedusername >> storedpassword)
             {
-            case'Y':
-            case 'y':login();break;
-            case 'N':
-            case 'n':cout << "Thank you for using our program :)"; break;
+                if (User[0].USERNAME == storedusername && User[0].PASSWORD == storedpassword)
+                {   
+                 found = true;
+                    break;
+                }
             }
-            break;
+            fin.close();
+            if (found)
+            {
+                cout << "User already registered. Please login or signup as a diffrent user\n";
+                char ans;
+                cout << "1.Sign up\n";
+                cout << "2.Log in\n";
+                cin >> ans;
+                switch (ans)
+                {
+                case '1':signup();break;
+                case '2':login();
+                    if (IsUser)
+                {
+                    userinterface();
+                }
+                        else if (IsAdmin)
+                {
+                    AdminInterface();
+                }
+                        break;
+                }
+            }
+            else
+            {
+                fout.open("user.txt", ios::app);
+                fout << User[0].USERNAME << ' ' << User[0].PASSWORD << endl;
+                fout.close();
+                cout << "Signup Sucssesful!\n ";
+                cout << "Do you want to login ? (y/n)";
+                cin >> choice;
+                switch (choice)
+                {
+                case'Y':
+                case 'y':login();break;
+                case 'N':
+                case 'n':cout << "Thank you for using our program :)"; break;
+                }
+                break;
+            }
         }
         else if (ans == "Admin" || ans == "admin")
         {
@@ -134,8 +188,6 @@ void signup()
 
     }
 }
-
-
 /*The main login UI*/
 void LoginInterface()
 {
@@ -161,15 +213,15 @@ void LoginInterface()
 
 int main()
 {
-    
+
     LoginInterface();
     if (IsUser)
     {
-        cout << "user\n";
+        userinterface();
     }
     else if (IsAdmin)
     {
-       AdminInterface();
+        AdminInterface();
     }
     return 0;
 }
