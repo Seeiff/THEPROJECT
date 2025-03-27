@@ -1,227 +1,166 @@
 #include <iostream>
-#include<string>
+#include <string>
 #include <fstream>
 using namespace std;
-bool IsUser = false;
-bool IsAdmin = false;
-string inputuser, inputpass, storedusername, storedpassword;
-struct UserData
+#define max_messages 5
+#define max_users 100
+#define max_admins 5
+string input_name, input_password, input_type;
+int count_users, user_array_num, admin_array_num;			// count_users is only for sign up(seif abwahed).
+struct feedback_messages
 {
-    string USERNAME;
-    string PASSWORD;
-    string FeedBack;
-}User[100], Admin[100];
+	int count_messages;							// count for every type for every user.
+	string message[max_messages];				// every type(3) for every user has 5 messages at most.
+};
 
-
-void AdminInterface()
+struct user_data
 {
-    cout << "\t-------------------------------\n";
-    cout << "\tWelcome to the Admin interface\n";
-    cout << "\t-------------------------------\n";
-    cout << "1.Manage users \n";
-    cout << "2.Delete users\n";
+	string name;
+	string password;
+	string email;
+	feedback_messages type[3];							 // (bug report, feature request or general feedback)
+}user[max_users];
+
+struct admin_data
+{
+	string name;
+	string password;
+}admin[max_admins];
+
+void reading_data_from_file()							// ziad tarek
+{
+
 
 }
 
-
-
-
-void login()
+void saving_data_to_file()								// ziad tarek
 {
-    ifstream fin;
-    bool found = false;
-    do
-    {
-        cout << "Enter Username: ";
-        cin >> inputuser;
-        cout << "Enter Password: ";
-        cin >> inputpass;
-        fin.open("user.txt");
-        while (fin >> storedusername >> storedpassword)
-        {
-            if (inputuser == storedusername && inputpass == storedpassword)
-            {
-                IsUser = true;
-                found = true;
-                break;
-            }
-        }
 
-        fin.close();
-        fin.open("admin.txt");
-        while (fin >> storedusername >> storedpassword)
-        {
-            if (inputuser == storedusername && inputpass == storedpassword)
-            {
-                IsAdmin = true;
-                found = true;
-                break;
-            }
-        }
-
-        fin.close();
-        if (found)
-            cout << "Login Successful!\n";
-        else
-            cout << "Login Failed. Try again\n";
-
-
-    } while (!found);
-}
-
-
-
-
-void signupasadmin()
-{
-    ofstream fout;
-    char choice;
-    cout << "Enter Username: ";
-    cin >> Admin[0].USERNAME;
-    cout << "Enter Password: ";
-    cin >> Admin[0].PASSWORD;
-    fout.open("admin.txt", ios::app);
-    fout << Admin[0].USERNAME << ' ' << Admin[0].PASSWORD << endl;
-    fout.close();
-    cout << "Signup Sucssesful!\n ";
-    cout << "Do you want to login ? (y/n)\n";
-    cin >> choice;
-    switch (choice)
-    {
-    case'Y':
-    case 'y':login();break;
-    case 'N':
-    case 'n':cout << "Thank you for using our program :)\n";
-    }
-}
-void userinterface()
-{
-    int ans;
-    cout << "\t-------------------------------\n";
-    cout << "\t       Welcome back " << inputuser << " !\n";
-    cout << "\t-------------------------------\n";
-    cout << "1.Submit a Feedback\n";
-    cout << "2.Edit an existing Feedback\n";
-    cout << "3.Delete Feedback\n";
-    cin >> ans;
-    switch (ans)
-    {
-    case '1': /*function el submit*/ break;
-    case '2': /*function el edit*/break;
-    case '3':/*function el delete*/break;
-    default:cout << "Invalid input please enter 1 or 2 or 3\n ";userinterface();break;
-    }
-}
-void signup()
-{
-    string ans;
-    while (true)
-    {
-        cout << "Do you want to sign up as a user or as an admin ?\n";
-        cin >> ans;
-        if (ans == "User" || ans == "user")
-        {
-            ofstream fout;
-            ifstream fin;
-            bool found = false;
-            char choice;
-            cout << "Enter Username: ";
-            cin >> User[0].USERNAME;
-            cout << "Enter Password: ";
-            cin >> User[0].PASSWORD;
-            fin.open("user.txt");
-            while (fin >> storedusername >> storedpassword)
-            {
-                if (User[0].USERNAME == storedusername && User[0].PASSWORD == storedpassword)
-                {   
-                 found = true;
-                    break;
-                }
-            }
-            fin.close();
-            if (found)
-            {
-                cout << "User already registered. Please login or signup as a diffrent user\n";
-                char ans;
-                cout << "1.Sign up\n";
-                cout << "2.Log in\n";
-                cin >> ans;
-                switch (ans)
-                {
-                case '1':signup();break;
-                case '2':login();
-                    if (IsUser)
-                {
-                    userinterface();
-                }
-                        else if (IsAdmin)
-                {
-                    AdminInterface();
-                }
-                        break;
-                }
-            }
-            else
-            {
-                fout.open("user.txt", ios::app);
-                fout << User[0].USERNAME << ' ' << User[0].PASSWORD << endl;
-                fout.close();
-                cout << "Signup Sucssesful!\n ";
-                cout << "Do you want to login ? (y/n)";
-                cin >> choice;
-                switch (choice)
-                {
-                case'Y':
-                case 'y':login();break;
-                case 'N':
-                case 'n':cout << "Thank you for using our program :)"; break;
-                }
-                break;
-            }
-        }
-        else if (ans == "Admin" || ans == "admin")
-        {
-            signupasadmin(); break;
-        }
-        else
-            cout << "Invalid input. Please enter 'User' or 'Admin'. Try again.\n";
-
-    }
-}
-/*The main login UI*/
-void LoginInterface()
-{
-    char choice;
-    cout << "                                               -------------------------------\n";
-    cout << "                                               Login or Signup to your account\n";
-    cout << "                                               -------------------------------\n";
-    cout << "Choose Number:\n";
-    cout << "1--> Signup\n";
-    cout << "2--> Login\n";
-    cin >> choice;
-    switch (choice)
-    {
-    case '1': signup();break;
-    case '2': login();break;
-    default: cout << "Invalid input please enter 1 or 2\n ";LoginInterface();break;
-    }
 
 }
 
+void feedback_submission()								// omar aly
+{
+	string submit_again;
+	cout << "\n						Welcome to feedback submission\n";
+	do 
+	{
+		cout << "Please choose the type of feedback you want to submit\n";
+		cout << "1 for bug report\n";
+		cout << "2 for feature request\n";
+		cout << "3 for general feedback\n";
+		do
+		{
+			cin >> input_type;
 
-/*This is the main functions where all other program functions are called and exucted*/
+			if (input_type == "1")
+			{
+				// do something
+				user[user_array_num].type[0].count_messages++;
+				break;
+			}
+			else if (input_type == "2")
+			{
+				// do something
+				user[user_array_num].type[1].count_messages++;
+				break;
+			}
+			else if (input_type == "3")
+			{
+				// do something
+				user[user_array_num].type[2].count_messages++;
+				break;
+			}
+			else cout << "Invalid choice!! please enter a valid choice: ";
 
-int main()
+		} while (input_type != "1" && input_type != "2" && input_type != "3");
+		cout << "Do you want to submit a feedback again?(type yes if you want): ";
+		cin >> submit_again;
+	} while (submit_again == "yes" || submit_again == "Yes");
+}
+
+void edit_submission()								// salem or fawzy
+{
+	
+
+}
+
+void delete_submission()							// salem or fawzy
+{
+	
+	// count_messages--;
+}
+
+void feedback_prioritization()								// ramez amr
 {
 
-    LoginInterface();
-    if (IsUser)
-    {
-        userinterface();
-    }
-    else if (IsAdmin)
-    {
-        AdminInterface();
-    }
-    return 0;
+
+}
+
+void user_interface()									// ziad tarek
+{
+	string choice;
+	cout << "Welcome " << input_name << endl;
+	cout << "Press 1 to submit a feedback\n";
+	cout << "Press 2 to edit your feedback(s)\n";
+	cout << "Press 3 to delete your feedback(s)\n";
+	cout << "Press 4 to see the most feedback submitted\n";
+	do
+	{
+		cin >> choice;
+		if (choice == "1")
+		{
+			feedback_submission();
+			break;
+		}
+		else if (choice == "2")
+		{
+			edit_submission();
+			break;
+		}
+		else if (choice == "3")
+		{
+			delete_submission();
+			break;
+		}
+		else if (choice == "4")
+		{
+			feedback_prioritization(); 
+			break;
+		}
+		else cout << "Invalid choice!! please enter a valid choice: ";
+
+	} while (choice != "1" && choice != "2" && choice != "3" && choice != "4");
+}
+
+void admin_interface()							// seif tamer
+{
+	
+
+}
+
+void user_authentication()						// seif abwahed
+{
+	//count_users++;
+	user_interface();
+	admin_interface();
+}
+
+int main()										// ziad tarek
+{
+	fstream file;
+	file.open("data.txt");
+	if (file.is_open())
+		reading_data_from_file();
+	else
+	{
+		cout << "						ERROR OPENING THE FILE!!\n\n";
+		return 0;
+	}
+	cout << "						 WELCOME TO OUR PROJECT\n";
+	cout << "						 ______________________\n\n";
+	user_authentication();
+	cout << "\n\n						THANK YOU FOR YOUR TIME\n\n";
+	saving_data_to_file();
+	return 0;
 }
