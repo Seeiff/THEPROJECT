@@ -1,12 +1,13 @@
 #include <iostream>
 #include <string>
 #include <fstream>
+#include<cstdlib>
 using namespace std;
 #define max_messages 5
 #define max_users 100
 #define max_admins 5
-string input_name, input_password, input_type;
-int count_users, user_array_num, admin_array_num;			// count_users is only for sign up(seif abwahed).
+string input_name, input_password, input_type, input_email;
+int count_users, user_array_num, admin_array_num, user_attempts = 3,admin_attempts=3;			// count_users is only for sign up(seif abwahed).
 struct feedback_messages
 {
 	int count_messages;							// count for every type for every user.
@@ -43,7 +44,7 @@ void feedback_submission()								// omar aly
 {
 	string submit_again;
 	cout << "\n						Welcome to feedback submission\n";
-	do 
+	do
 	{
 		cout << "Please choose the type of feedback you want to submit\n";
 		cout << "1 for bug report\n";
@@ -81,13 +82,13 @@ void feedback_submission()								// omar aly
 
 void edit_submission()								// salem or fawzy
 {
-	
+
 
 }
 
 void delete_submission()							// salem or fawzy
 {
-	
+
 	// count_messages--;
 }
 
@@ -100,7 +101,9 @@ void feedback_prioritization()								// ramez amr
 void user_interface()									// ziad tarek
 {
 	string choice;
-	cout << "Welcome " << input_name << endl;
+	cout << "----------------------\n";
+	cout << "Welcome back " << input_name <<" !"<< endl;
+	cout << "----------------------\n";
 	cout << "Press 1 to submit a feedback\n";
 	cout << "Press 2 to edit your feedback(s)\n";
 	cout << "Press 3 to delete your feedback(s)\n";
@@ -125,7 +128,7 @@ void user_interface()									// ziad tarek
 		}
 		else if (choice == "4")
 		{
-			feedback_prioritization(); 
+			feedback_prioritization();
 			break;
 		}
 		else cout << "Invalid choice!! please enter a valid choice: ";
@@ -135,15 +138,119 @@ void user_interface()									// ziad tarek
 
 void admin_interface()							// seif tamer
 {
-	
+
 
 }
+void Login()
+{
+	string ans;
+	cout << "Do you want to login as an Admin or User ?\n";
+	cin >> ans;
+	if (ans == "user" || ans == "User")
+	{
+		bool found = false;
+		cout << "Enter Username: ";
+		cin >> input_name;
+		cout << "Enter Password: ";
+		cin >> input_password;
 
+		for (int i = 0; i < count_users; i++) 
+		{
+			if (user[i].name == input_name && user[i].password == input_password) 
+			{
+				user_array_num = i;
+				found = true;
+				break;
+			}
+		}
+
+		if (found) 
+		{
+			user_interface();
+		}
+		else 
+		{
+			cout << "Invalid Username or Password.\n";
+			user_attempts--;
+			cout << "Attempts left = " << user_attempts<<'\n';
+			if (user_attempts != 0)
+				Login();
+			else
+			{
+				cout << "No attempts left";exit(1);
+			}
+		}
+	}
+	else if (ans == "Admin" || ans == "admin")
+	{
+		bool found = false;
+		cout << "Enter Username: ";
+		cin >> input_name;
+		cout << "Enter Password: ";
+		cin >> input_password;
+
+		for (int i = 0; i < max_admins; i++)
+		{
+			if (admin[i].name == input_name && admin[i].password == input_password)
+			{
+				admin_array_num = i;
+				found = true;
+				break;
+			}
+		}
+
+		if (found)
+		{
+			admin_interface();
+		}
+		else
+		{
+			cout << "Invalid Username or Password.\n";
+			admin_attempts--;
+			cout << "Attempts left = " << admin_attempts;
+			if (admin_attempts != 0)
+				Login();
+			else
+			{
+				cout << "No attempts left";exit(1);
+			}
+		}
+	}
+	else
+	{
+		cout << "Invalid input. Try again\n";Login();
+	}
+}
+void Signup()
+{
+	cout << "Enter Email: ";
+	cin >> input_email;
+	cout << "Enter Username: ";
+	cin >> input_name;
+	cout << "Enter Password: ";
+	cin >> input_password;
+	user[count_users].email = input_email;
+	user[count_users].name = input_name;
+	user[count_users].password = input_password;
+	cout << "Signup Successful!\n";
+	user_interface();
+	count_users++;
+}
 void user_authentication()						// seif abwahed
 {
-	//count_users++;
-	user_interface();
-	admin_interface();
+	char ans;
+	cout << "---------------------------------\n";
+	cout << "Log in or Sign up to your account\n";
+	cout << "---------------------------------\n";
+	cout << "Do you want to login or sign up ?\n";
+	cout << "1.Login\n" << "2.Signup\n";
+	cin >> ans;
+	switch (ans)
+	{
+	case '1':Login();break;
+	case '2':Signup();break;
+	default:cout << "Invalid Choice!.Try Again\n";user_authentication();break;
+	}
 }
 
 int main()										// ziad tarek
