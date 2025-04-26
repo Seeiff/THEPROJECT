@@ -7,7 +7,7 @@ using namespace std;
 #define max_users 100
 #define max_admins 5
 string input_name, input_password, input_type, input_email;
-int count_users, user_array_num, admin_array_num, user_attempts = 3,admin_attempts=3;			// count_users is only for sign up(seif abwahed).
+int count_users, user_array_num, admin_array_num, user_attempts = 3, admin_attempts = 3;			// count_users is only for sign up(seif abwahed).
 struct feedback_messages
 {
 	int count_messages;							// count for every type for every user.
@@ -102,7 +102,7 @@ void user_interface()									// ziad tarek
 {
 	string choice;
 	cout << "----------------------\n";
-	cout << "Welcome back " << input_name <<" !"<< endl;
+	cout << "Welcome back " << input_name << " !" << endl;
 	cout << "----------------------\n";
 	cout << "Press 1 to submit a feedback\n";
 	cout << "Press 2 to edit your feedback(s)\n";
@@ -154,9 +154,9 @@ void Login()
 		cout << "Enter Password: ";
 		cin >> input_password;
 
-		for (int i = 0; i < count_users; i++) 
+		for (int i = 0; i < count_users; i++)
 		{
-			if (user[i].name == input_name && user[i].password == input_password) 
+			if (user[i].name == input_name && user[i].password == input_password)
 			{
 				user_array_num = i;
 				found = true;
@@ -164,15 +164,15 @@ void Login()
 			}
 		}
 
-		if (found) 
+		if (found)
 		{
 			user_interface();
 		}
-		else 
+		else
 		{
 			cout << "Invalid Username or Password.\n";
 			user_attempts--;
-			cout << "Attempts left = " << user_attempts<<'\n';
+			cout << "Attempts left = " << user_attempts << '\n';
 			if (user_attempts != 0)
 				Login();
 			else
@@ -238,18 +238,25 @@ void Signup()
 }
 void user_authentication()						// seif abwahed
 {
-	char ans;
+	string ans;
 	cout << "---------------------------------\n";
 	cout << "Log in or Sign up to your account\n";
 	cout << "---------------------------------\n";
-	cout << "Do you want to login or sign up ?\n";
-	cout << "1.Login\n" << "2.Signup\n";
+	cout << "1.Login\n"<<"2.Signup\n";
 	cin >> ans;
-	switch (ans)
+
+	if (ans == "1")
 	{
-	case '1':Login();break;
-	case '2':Signup();break;
-	default:cout << "Invalid Choice!.Try Again\n";user_authentication();break;
+		Login();
+	}
+	else if (ans == "2")
+	{
+		Signup();
+	}
+	else 
+	{
+		cout << "Invalid Choice! Try Again\n";
+		user_authentication();
 	}
 }
 
